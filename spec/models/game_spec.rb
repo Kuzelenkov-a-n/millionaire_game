@@ -38,7 +38,6 @@ RSpec.describe Game, type: :model do
     end
   end
 
-
   # тесты на основную игровую логику
   context 'game mechanics' do
 
@@ -83,6 +82,47 @@ RSpec.describe Game, type: :model do
     it '.current_game_question' do
       level = game_w_questions.current_level
       expect(game_w_questions.current_game_question.level).to eq(level)
+    end
+  end
+
+  context '.answer_current_question!' do
+    it 'right answer' do
+      q = game_w_questions.current_game_question
+      # Если вернётся true следовательно ответ верный
+      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
+      # Также проверяем состояние игры ожидаем :in_progress
+      expect(game_w_questions.status).to eq(:in_progress)
+    end
+
+    it 'wrong answer' do
+      # Вытаскиваем ключ правильного ответа. Удаляем его из всех вариантов.
+      correct_answer = game_w_questions.current_game_question.correct_answer_key
+      all_variants = %w[a b c d]
+      all_variants.delete(correct_answer)
+      # Подставляем любой из неправильных вариантов и получаем на выходу false
+      expect(game_w_questions.answer_current_question!(all_variants.sample)).to be_falsey
+
+      # Также проверяем состояние игры ожидаем :fail
+      expect(game_w_questions.status).to eq(:fail)
+    end
+
+    it 'right answer last lvl' do
+      # Устанавливаем последний уровень
+      game_w_questions.current_level = 14
+      q = game_w_questions.current_game_question
+
+      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
+      # Проверяем статус игры после правильного ответа
+      expect(game_w_questions.status).to eq(:won)
+    end
+
+    it 'right answer after timeout' do
+      game_w_questions.created_at = 1.hour.ago
+      q = game_w_questions.current_game_question
+      # Метод answer_current_question! вернёт false несмотря на правильный ответ, т.к. время вышло
+      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_falsey
+      # Также проверяем состояние игры ожидаем :timeout
+      expect(game_w_questions.status).to eq(:timeout)
     end
   end
 
