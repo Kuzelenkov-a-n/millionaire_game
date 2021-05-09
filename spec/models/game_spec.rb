@@ -87,42 +87,42 @@ RSpec.describe Game, type: :model do
 
   context '.answer_current_question!' do
     it 'right answer' do
-      q = game_w_questions.current_game_question
       # Если вернётся true следовательно ответ верный
-      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
+      expect(game_w_questions.answer_current_question!('d')).to be_truthy
       # Также проверяем состояние игры ожидаем :in_progress
       expect(game_w_questions.status).to eq(:in_progress)
+      # Игра должна продолжаться, ожидаем false
+      expect(game_w_questions.finished?).to be_falsey
     end
 
     it 'wrong answer' do
-      # Вытаскиваем ключ правильного ответа. Удаляем его из всех вариантов.
-      correct_answer = game_w_questions.current_game_question.correct_answer_key
-      all_variants = %w[a b c d]
-      all_variants.delete(correct_answer)
-      # Подставляем любой из неправильных вариантов и получаем на выходу false
-      expect(game_w_questions.answer_current_question!(all_variants.sample)).to be_falsey
-
+      # Подставляем любой из неправильных вариантов и получаем на выходе false
+      expect(game_w_questions.answer_current_question!('a')).to be_falsey
       # Также проверяем состояние игры ожидаем :fail
       expect(game_w_questions.status).to eq(:fail)
+      # Игра прекращена, ожидаем true
+      expect(game_w_questions.finished?).to be_truthy
     end
 
     it 'right answer last lvl' do
       # Устанавливаем последний уровень
       game_w_questions.current_level = 14
-      q = game_w_questions.current_game_question
-
-      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
+      # Метод answer_current_question! вернёт true
+      expect(game_w_questions.answer_current_question!('d')).to be_truthy
       # Проверяем статус игры после правильного ответа
       expect(game_w_questions.status).to eq(:won)
+      # После победы, игра должна быть окончена, ожидаем true
+      expect(game_w_questions.finished?).to be_truthy
     end
 
     it 'right answer after timeout' do
       game_w_questions.created_at = 1.hour.ago
-      q = game_w_questions.current_game_question
       # Метод answer_current_question! вернёт false несмотря на правильный ответ, т.к. время вышло
-      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_falsey
+      expect(game_w_questions.answer_current_question!('d')).to be_falsey
       # Также проверяем состояние игры ожидаем :timeout
       expect(game_w_questions.status).to eq(:timeout)
+      # После окончания времени, игра должна быть окончена, ожидаем true
+      expect(game_w_questions.finished?).to be_truthy
     end
   end
 
