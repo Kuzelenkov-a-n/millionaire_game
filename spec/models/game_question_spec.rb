@@ -22,7 +22,7 @@ RSpec.describe GameQuestion, type: :model do
 
     it 'correct .answer_correct?' do
       # именно под буквой b в тесте мы спрятали указатель на верный ответ
-      expect(game_question.answer_correct?('b')).to be_truthy
+      expect(game_question.answer_correct?('b')).to be true
     end
 
     it 'correct .level & .text delegates' do

@@ -92,7 +92,7 @@ RSpec.describe Game, type: :model do
       # Также проверяем состояние игры ожидаем :in_progress
       expect(game_w_questions.status).to eq(:in_progress)
       # Игра должна продолжаться, ожидаем false
-      expect(game_w_questions.finished?).to be_falsey
+      expect(game_w_questions.finished?).to be false
     end
 
     it 'wrong answer' do
@@ -101,7 +101,7 @@ RSpec.describe Game, type: :model do
       # Также проверяем состояние игры ожидаем :fail
       expect(game_w_questions.status).to eq(:fail)
       # Игра прекращена, ожидаем true
-      expect(game_w_questions.finished?).to be_truthy
+      expect(game_w_questions.finished?).to be true
     end
 
     it 'right answer last lvl' do
@@ -112,7 +112,7 @@ RSpec.describe Game, type: :model do
       # Проверяем статус игры после правильного ответа
       expect(game_w_questions.status).to eq(:won)
       # После победы, игра должна быть окончена, ожидаем true
-      expect(game_w_questions.finished?).to be_truthy
+      expect(game_w_questions.finished?).to be true
     end
 
     it 'right answer after timeout' do
@@ -122,14 +122,14 @@ RSpec.describe Game, type: :model do
       # Также проверяем состояние игры ожидаем :timeout
       expect(game_w_questions.status).to eq(:timeout)
       # После окончания времени, игра должна быть окончена, ожидаем true
-      expect(game_w_questions.finished?).to be_truthy
+      expect(game_w_questions.finished?).to be true
     end
   end
 
   context '.status' do
     before(:each) do
       game_w_questions.finished_at = Time.now
-      expect(game_w_questions.finished?).to be_truthy
+      expect(game_w_questions.finished?).to be true
     end
 
     it ':won' do
