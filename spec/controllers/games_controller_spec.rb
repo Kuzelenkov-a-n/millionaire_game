@@ -184,5 +184,22 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to redirect_to(game_path(game_w_questions))
       expect(flash[:alert]).to be
     end
+
+    it 'uses fifty_fifty help' do
+      expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
+      expect(game_w_questions.fifty_fifty_used).to be false
+
+      put :help, id: game_w_questions.id, help_type: :fifty_fifty
+      game = assigns(:game)
+
+      expect(game.finished?).to be false
+      expect(game.fifty_fifty_used).to be true
+
+      fifty_fifty_answer = game.current_game_question.help_hash[:fifty_fifty]
+      expect(fifty_fifty_answer).to be
+      expect(fifty_fifty_answer).to contain_exactly('d', fifty_fifty_answer.last)
+      expect(response.status).to eq(302)
+      expect(response).to redirect_to(game_path(game))
+    end
   end
 end
