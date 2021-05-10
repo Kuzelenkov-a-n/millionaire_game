@@ -54,5 +54,16 @@ RSpec.describe GameQuestion, type: :model do
       ah = game_question.help_hash[:audience_help]
       expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
     end
+
+    it 'correct fifty_fifty help' do
+      expect(game_question.help_hash).not_to include(:fifty_fifty)
+
+      game_question.add_fifty_fifty
+
+      expect(game_question.help_hash).to include(:fifty_fifty)
+
+      ffh = game_question.help_hash[:fifty_fifty]
+      expect(ffh).to contain_exactly('b', ffh.last)
+    end
   end
 end
