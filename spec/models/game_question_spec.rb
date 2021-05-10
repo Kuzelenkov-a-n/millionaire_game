@@ -55,15 +55,27 @@ RSpec.describe GameQuestion, type: :model do
       expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
     end
 
-    it 'correct fifty_fifty help' do
+    it 'correct fifty_fifty_help' do
       expect(game_question.help_hash).not_to include(:fifty_fifty)
 
       game_question.add_fifty_fifty
 
       expect(game_question.help_hash).to include(:fifty_fifty)
 
-      ffh = game_question.help_hash[:fifty_fifty]
-      expect(ffh).to contain_exactly('b', ffh.last)
+      fifty_fifty_answer = game_question.help_hash[:fifty_fifty]
+      expect(fifty_fifty_answer).to contain_exactly('b', fifty_fifty_answer.last)
+    end
+
+    it 'correct friend_call_help' do
+      expect(game_question.help_hash).not_to include(:friend_call)
+
+      game_question.add_friend_call
+
+      expect(game_question.help_hash).to include(:friend_call)
+
+      friend_answer_text = game_question.help_hash[:friend_call]
+      friend_answer_key = friend_answer_text.split.last
+      expect(friend_answer_text).to include("считает, что это вариант #{friend_answer_key}")
     end
   end
 end
