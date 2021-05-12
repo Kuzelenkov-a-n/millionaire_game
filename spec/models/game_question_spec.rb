@@ -73,9 +73,7 @@ RSpec.describe GameQuestion, type: :model do
 
       expect(game_question.help_hash).to include(:friend_call)
 
-      friend_answer_text = game_question.help_hash[:friend_call]
-      friend_answer_key = friend_answer_text.split.last
-      expect(friend_answer_text).to include("считает, что это вариант #{friend_answer_key}")
+      expect(game_question.help_hash[:friend_call].split.last).to match(/^[A|B|C|D]\z/)
     end
   end
 end
