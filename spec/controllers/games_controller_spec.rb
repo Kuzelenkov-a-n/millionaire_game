@@ -76,9 +76,9 @@ RSpec.describe GamesController, type: :controller do
   end
 
   # группа тестов на экшены контроллера, доступных залогиненным юзерам
-  context 'Usual users' do
+  context 'Usual user' do
     # перед каждым тестом в группе
-    before(:each) { sign_in user } # логиним юзера users с помощью спец. Devise метода sign_in
+    before(:each) { sign_in user } # логиним юзера user с помощью спец. Devise метода sign_in
 
     # юзер может создать новую игру
     it 'creates game' do
@@ -107,11 +107,11 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to render_template('show') # и отрендерить шаблон show
     end
 
-    it '#show game of another users' do
+    it '#show game of another user' do
       # создаем новую игру, юзер не прописан, будет создан фабрикой новый
       another_users_game = FactoryGirl.create(:game_with_questions)
 
-      # пробуем зайти на эту игру текущий залогиненным users
+      # пробуем зайти на эту игру текущий залогиненным user
       get :show, id: another_users_game.id
 
       expect(response.status).to eq(302) # статус не 200 ОК

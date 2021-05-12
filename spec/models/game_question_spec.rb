@@ -43,7 +43,7 @@ RSpec.describe GameQuestion, type: :model do
   # }
   #
 
-  context 'users helpers' do
+  context 'user helpers' do
     it 'correct audience_help' do
       expect(game_question.help_hash).not_to include(:audience_help)
 
