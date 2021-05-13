@@ -40,6 +40,14 @@ RSpec.describe 'users/show', type: :view do
     it 'not renders change password button' do
       expect(rendered).not_to match 'Сменить имя и пароль'
     end
+
+    it 'renders game partial' do
+      assign(:games, [FactoryGirl.build_stubbed(:game)])
+      stub_template 'users/_game.html.erb' => 'Тут игра'
+
+      render
+      expect(rendered).to match 'Тут игра'
+    end
   end
 end
 
