@@ -1,26 +1,45 @@
 require 'rails_helper'
 
 RSpec.describe 'users/show', type: :view do
-  before(:each) do
-    current_user = assign(:user, FactoryGirl.build_stubbed(:user, name: 'Андрей'))
-    allow(view).to receive(:current_user).and_return(current_user)
+  context 'Usual user' do
+    before(:each) do
+      current_user = assign(:user, FactoryGirl.build_stubbed(:user, name: 'Андрей'))
+      allow(view).to receive(:current_user).and_return(current_user)
 
-    render
+      render
+    end
+
+    it 'renders user name' do
+      expect(rendered).to match 'Андрей'
+    end
+
+    it 'renders change password button' do
+      expect(rendered).to match 'Сменить имя и пароль'
+    end
+
+    it 'renders game partial' do
+      assign(:games, [FactoryGirl.build_stubbed(:game)])
+      stub_template 'users/_game.html.erb' => 'Тут игра'
+
+      render
+      expect(rendered).to match 'Тут игра'
+    end
   end
 
-  it 'renders user name' do
-    expect(rendered).to match 'Андрей'
-  end
+  context 'Anonymous' do
+    before(:each) do
+      assign(:user, FactoryGirl.build_stubbed(:user, name: 'Андрей'))
 
-  it 'renders change password button' do
-    expect(rendered).to match 'Сменить имя и пароль'
-  end
+      render
+    end
 
-  it 'renders game partial' do
-    assign(:games, [FactoryGirl.build_stubbed(:game)])
-    stub_template 'users/_game.html.erb' => 'Тут игра'
+    it 'renders user name' do
+      expect(rendered).to match 'Андрей'
+    end
 
-    render
-    expect(rendered).to match 'Тут игра'
+    it 'not renders change password button' do
+      expect(rendered).not_to match 'Сменить имя и пароль'
+    end
   end
 end
+
