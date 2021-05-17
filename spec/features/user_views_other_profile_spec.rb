@@ -48,8 +48,8 @@ RSpec.feature 'USER views other profile', type: :feature do
   expect(page).to have_content '1'
   # Статус
   expect(page).to have_content 'деньги'
-  # Регулярка для проверки формата даты и времени
-  expect(page).to have_content /\d{2} [а-я]{3,8}, \d{2}:\d{2}/
+  # Дата
+  expect(page).to have_content I18n.l(first_game.created_at, format: :short)
   # Вопрос
   expect(page).to have_content '6'
   # Выигрыш
@@ -60,8 +60,8 @@ RSpec.feature 'USER views other profile', type: :feature do
   expect(page).to have_content '2'
   # Статус
   expect(page).to have_content 'проигрыш'
-  # Регулярка для проверки формата даты и времени
-  expect(page).to have_content /\d{2} [а-я]{3,8}, \d{2}:\d{2}/
+  # Дата
+  expect(page).to have_content I18n.l(second_game.created_at, format: :short)
   # Вопрос
   expect(page).to have_content '14'
   # Выигрыш
